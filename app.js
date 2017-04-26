@@ -1,17 +1,19 @@
-// Sample node.js web app for bTreePress How-To-Use-Docker-With-Continous-Integration-To-Build-A-DevOps-Automated-Workflow
-// For demonstration purposes only
-'use strict';
+var express    = require('express');
+var app        = express();
+var bodyParser = require('body-parser');
 
-var express = require('express'),
-    app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.set('views', 'views');
-app.set('view engine', 'hbs');
+var port = process.env.PORT || 8080;
 
-app.get('/', function(req, res) {
-    res.render('home', {
-  });
+var router = express.Router();
+
+router.get('/', function(req, res) {
+    res.json({ message: 'API do projeto incluir' });
 });
 
-app.listen(8080);
-module.exports.getApp = app;
+app.use('/api', router);
+
+app.listen(port);
+console.log('Magic happens on port ' + port);

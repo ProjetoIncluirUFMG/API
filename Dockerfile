@@ -2,17 +2,24 @@ FROM node:4-onbuild
 
 MAINTAINER danielmapar@gmail.com
 
-ENV APP_DIR /src
+RUN apt-get update \
+	&& apt-get install apt-transport-https \
+	&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+	&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+  && apt-get update \
+	&& apt-get install yarn \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV APP_DIR /usr/src/app
 RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
 
 COPY package.json $APP_DIR
-RUN npm install \
-  && npm cache clean
+RUN yarn install \
+  && yarn cache clean
 
 COPY . $APP_DIR
 
 EXPOSE 8080
 
-# Run express server
-CMD node ./app.js
+CMD ["npm", "start"]
