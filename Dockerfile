@@ -20,6 +20,4 @@ RUN yarn install \
 
 COPY . $APP_DIR
 
-EXPOSE 8080
-
 CMD ["npm", "start"]
