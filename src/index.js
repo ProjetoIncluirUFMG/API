@@ -1,9 +1,10 @@
+import {} from 'dotenv/config';
 import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import initializeDb from './db';
+import inicializarBd from './db';
 import middleware from './middleware';
 import api from './api';
 import config from './config.json';
@@ -11,10 +12,10 @@ import config from './config.json';
 let app = express();
 app.server = http.createServer(app);
 
-// logger
+// Logger
 app.use(morgan('dev'));
 
-// 3rd party middleware
+// Bibliotecas de terceiros
 app.use(cors({
 	exposedHeaders: config.corsHeaders
 }));
@@ -23,18 +24,22 @@ app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
 
-// connect to db
-initializeDb( db => {
+// Conectar ao banco de dados
+inicializarBd().then(() => {
+	// Middlewares
+	app.use(middleware(config));
 
-	// internal middleware
-	app.use(middleware({ config, db }));
-
-	// api router
-	app.use('/api', api({ config, db }));
+	// Rotas da API
+	app.use('/', api());
 
 	app.server.listen(process.env.PORT || config.port);
 
 	console.log(`Started on port ${app.server.address().port}`);
+
+}).catch(err => {
+
+	console.log(`Não foi possivel connectar ao banco MySQL. Erro: ${err}`);
+	process.exit(1)
 });
 
 export default app;

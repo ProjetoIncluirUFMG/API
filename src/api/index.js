@@ -1,15 +1,14 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
-import facets from './facets';
+import cursos from './cursos';
 
-export default ({ config, db }) => {
+export default () => {
 	let api = Router();
 
-	// mount the facets resource
-	api.use('/facets', facets({ config, db }));
+	api.use('/cursos', cursos());
 
-	// perhaps expose some API metadata at the root
-	api.get('/', (req, res) => {
+	// Expor metadados na raiz do projeto
+	api.get('/api', (req, res) => {
 		res.json({ version });
 	});
 

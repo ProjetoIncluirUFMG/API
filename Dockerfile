@@ -24,4 +24,4 @@ ENV PORT 8002
 
 EXPOSE  8002
 
-CMD ["npm", "dev"]
+CMD ["npm", "run", "dev"]
