@@ -4,7 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import inicializarBd from './db';
+import conectarBD from './db';
 import middleware from './middleware';
 import api from './api';
 import config from './config.json';
@@ -24,22 +24,26 @@ app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
 
-// Conectar ao banco de dados
-inicializarBd().then(() => {
-	// Middlewares
-	app.use(middleware(config));
+const inicializarBd = () => {
+	// Conectar ao banco de dados
+	conectarBD().then(() => {
+		// Middlewares
+		app.use(middleware(config));
 
-	// Rotas da API
-	app.use('/', api());
+		// Rotas da API
+		app.use('/', api());
 
-	app.server.listen(process.env.PORT || config.port);
+		app.server.listen(process.env.PORT || config.port);
 
-	console.log(`Started on port ${app.server.address().port}`);
+		console.log(`Started on port ${app.server.address().port}`);
 
-}).catch(err => {
+	}).catch(err => {
+		console.log(`Não foi possivel connectar ao banco MySQL. Erro: ${err}`);
+		setTimeout(inicializarBd, 5000);
+	});
+};
 
-	console.log(`Não foi possivel connectar ao banco MySQL. Erro: ${err}`);
-	process.exit(1)
-});
+inicializarBd();
+
 
 export default app;

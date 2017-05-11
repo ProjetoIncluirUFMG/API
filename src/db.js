@@ -12,30 +12,30 @@ let conexaoBD = null;
 export function connect() {
 
 	console.log(`JSON para conecatar com o BD: ${util.inspect({
-    host: MYSQL_HOST,
+		host: MYSQL_HOST,
 		port: MYSQL_PORT,
-    user: MYSQL_USER,
-    password: MYSQL_PASSWORD,
-    database: MYSQL_DB
-  }, {showHidden: false, depth: null})}`);
+		user: MYSQL_USER,
+		password: MYSQL_PASSWORD,
+		database: MYSQL_DB
+	}, {showHidden: false, depth: null})}`);
 
-  return mysql.createConnection({
-    host: MYSQL_HOST,
-    user: MYSQL_USER,
-    password: MYSQL_PASSWORD,
-    database: MYSQL_DB
-  }).then(conexao => {
+	return mysql.createConnection({
+		host: MYSQL_HOST,
+		user: MYSQL_USER,
+		password: MYSQL_PASSWORD,
+		database: MYSQL_DB
+	}).then(conexao => {
 		conexaoBD = conexao;
 	});
 
 }
 
-export function query(queryString) {
-	return conexaoBD.query(queryString).then((resultado) => {
-		console.log(`Resultado da busca ${queryString} foi: ${util.inspect(resultado, {showHidden: false, depth: null})}`);
+export function query(options) {
+	return conexaoBD.query(options).then((resultado) => {
+		console.log(`Resultado da busca ${options.sql} foi: ${util.inspect(resultado, {showHidden: false, depth: null})}`);
 		return resultado;
 	}).catch(err => {
-		console.log(`Erro ao executar query: ${queryString} - erro: ${err}`);
+		console.log(`Erro ao executar query: ${options.sql} - erro: ${err}`);
 		throw err;
 	});
 }

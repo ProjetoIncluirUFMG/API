@@ -19,8 +19,14 @@ export default () => resource({
 
 	/** GET / - Listar todas as entidades */
 	index({ params }, res) {
-		query('SELECT * FROM curso WHERE status=1').then(cursos => {
-				res.json(cursos);
+		const options = {
+			sql: 'SELECT * FROM curso' + 
+			' LEFT JOIN disciplina ON curso.id_curso = disciplina.id_curso' +
+			' WHERE curso.status=1 AND disciplina.status=1' +
+			' ORDER BY curso.id_curso, disciplina.nome_disciplina'
+		};
+		query(options).then(cursos => {
+			res.json(cursos);
 		});
 	},
 
