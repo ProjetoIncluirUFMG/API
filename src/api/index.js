@@ -1,11 +1,14 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
-import cursos from './cursos';
+import curso from './curso';
+import usuario from './usuario';
 
 export default () => {
 	let api = Router();
 
-	api.use('/cursos', cursos());
+	api.use('/curso', curso());
+
+	api.use('/usuario', usuario());
 
 	// Expor metadados na raiz do projeto
 	api.get('/api', (req, res) => {

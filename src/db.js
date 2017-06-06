@@ -30,12 +30,12 @@ export function connect() {
 
 }
 
-export function query(options) {
-	return conexaoBD.query(options).then((resultado) => {
-		console.log(`Resultado da busca ${options.sql} foi: ${util.inspect(resultado, {showHidden: false, depth: null})}`);
+export function busca(opcoes) {
+	return conexaoBD.query(opcoes).then((resultado) => {
+		//console.log(`Resultado da busca ${opcoes.sql} foi: ${util.inspect(resultado, {showHidden: false, depth: null})}`);
 		return resultado;
 	}).catch(err => {
-		console.log(`Erro ao executar query: ${options.sql} - erro: ${err}`);
+		console.log(`Erro ao executar query: ${opcoes.sql} - erro: ${err}`);
 		throw err;
 	});
 }
