@@ -1,6 +1,13 @@
-dist
+# Logs
 logs
+*.log
 npm-debug.log
+
+# Dependency directory
 node_modules
-.DS_Store
+
+# Env variables
 .env
+
+# Finder stuff
+.DS_Store

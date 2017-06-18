@@ -1,4 +1,4 @@
-FROM node:4-onbuild
+FROM node:latest
 
 MAINTAINER danielmapar@gmail.com
 
