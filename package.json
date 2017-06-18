@@ -1,11 +1,11 @@
 {
   "name": "API",
   "version": "0.1.0",
-  "description": "Projeto Incluir - ES6 RESTful Express API",
+  "description": "Projeto Incluir - ES6 RESTful API",
   "main": "./bin/www.js",
   "scripts": {
     "dev": "./node_modules/.bin/nodemon -w ./server -w ./bin --exec \"babel-node ./bin/www.js --presets es2015,stage-0\"",
-    "build": "babel src -s -D -d dist --presets es2015,stage-0",
+    "build": "babel ./bin -s -D -d dist --presets es2015,stage-0",
     "test": "echo \"Erro: nenhum teste especificado\" && exit 1"
   },
   "keywords": [],
@@ -13,25 +13,30 @@
   "repository": "ProjetoIncluirUFMG/API",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "cors": "^2.7.1",
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
     "dotenv": "^4.0.0",
-    "express": "^4.14.0",
-    "morgan": "^1.8.0",
-    "mysql": "^2.13.0",
-    "sequelize": "^3.23.4",
+    "express": "^4.15.3",
+    "jwt-simple": "^0.5.1",
+    "morgan": "^1.8.2",
+    "mysql2": "^1.3.5",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^4.1.0",
     "util": "^0.10.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.0",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "eslint": "^3.1.1",
-    "eslint-config-airbnb": "^9.0.1",
-    "eslint-plugin-import": "^1.10.2",
-    "eslint-plugin-jsx-a11y": "^1.5.5",
-    "eslint-plugin-react": "^5.2.2",
-    "nodemon": "^1.9.2"
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.0.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.1.0",
+    "nodemon": "^1.11.0"
   }
 }

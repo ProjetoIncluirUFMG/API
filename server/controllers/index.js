@@ -1,5 +1,9 @@
-import cursos from './cursos';
+import curso from './curso';
+import aluno from './aluno';
+import autenticacao from './autenticacao';
 
 export default {
-  cursos,
+  curso,
+  aluno,
+  autenticacao,
 };

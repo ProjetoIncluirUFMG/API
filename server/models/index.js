@@ -1,34 +1,41 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import dbConfig from '../config/config.js';
+import config from '../config';
 
-const config = dbConfig.mysql;
-const basename = path.basename(module.filename);
-const db = {};
+const configBD = config.bd;
+const nomeBase = path.basename(module.filename);
+const bd = {};
 
-const sequelize = new Sequelize(
-  config.database, config.username, config.password, config
-);
+// Conectar ao banco de dados
+const sequelize = new Sequelize(`${configBD.dialeto}://${configBD.usuario}:${configBD.senha}@${configBD.host}:${configBD.porta}/${configBD.banco}`);
 
+// Testar conexão com o banco de dados
+sequelize
+  .authenticate()
+  .then(() => console.log('API conectou com sucesso com o Banco de Dados.'))
+  .catch(err => console.log('Não foi possivel conectar ao Banco de Dados:', err));
+
+// Carregar tabelas
 fs
   .readdirSync(__dirname)
-  .filter((file) =>
-    (file.indexOf('.') !== 0) &&
-    (file !== basename) &&
-    (file.slice(-3) === '.js'))
-  .forEach((file) => {
-    const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
+  .filter(arquivo =>
+    (arquivo.indexOf('.') !== 0) &&
+    (arquivo !== nomeBase) &&
+    (arquivo.slice(-3) === '.js'))
+  .forEach((arquivo) => {
+    const modelo = sequelize.import(path.join(__dirname, arquivo));
+    bd[modelo.name] = modelo;
   });
 
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+// Criar associação entre tabelas
+Object.keys(bd).forEach((nomeModelo) => {
+  if (bd[nomeModelo].associar) {
+    bd[nomeModelo].associar(bd);
   }
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+bd.sequelize = sequelize;
+bd.Sequelize = Sequelize;
 
-export default db;
+export default bd;

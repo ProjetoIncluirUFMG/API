@@ -1,14 +1,23 @@
 export default (sequelize, DataTypes) => {
-  return sequelize.define('Curso', {
+  const Curso = sequelize.define('Curso', {
     id_curso: {
       primaryKey: true,
       type: DataTypes.INTEGER,
+      autoIncrement: true,
     },
-    nome_curso: DataTypes.TEXT,
-    descricao_curso: DataTypes.TEXT,
+    nome_curso: DataTypes.STRING,
+    descricao_curso: DataTypes.STRING,
     status: DataTypes.INTEGER,
   }, {
     tableName: 'curso',
     timestamps: false,
   });
+  Curso.associar = (models) => {
+    Curso.hasMany(models.Disciplina, {
+      foreignKey: 'id_curso',
+      sourceKey: 'id_curso',
+      as: 'disciplinas',
+    });
+  };
+  return Curso;
 };
