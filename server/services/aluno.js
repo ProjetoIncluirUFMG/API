@@ -1,9 +1,11 @@
 import bcrypt from 'bcrypt-nodejs';
 import jwt from 'jwt-simple';
+import Promise from 'bluebird';
 import config from '../config';
 
 import BD, { criarOuAtualizar } from '../models';
 
+const bcryptPromise = Promise.promisifyAll(bcrypt);
 const Aluno = BD.Aluno;
 
 export default class AlunoService {
@@ -21,7 +23,12 @@ export default class AlunoService {
       aluno.is_cpf_responsavel = false;
     }
     aluno.status = 10;
-    return criarOuAtualizar(Aluno, aluno, { email: aluno.email });
+    return bcryptPromise.genSaltAsync(10)
+    .then(salt => bcryptPromise.hashAsync(aluno.senha, salt, null))
+    .then((hash) => {
+      aluno.senha = hash;
+      criarOuAtualizar(Aluno, aluno, { email: aluno.email });
+    });
   }
 
   static buscarPorEmail(email) {

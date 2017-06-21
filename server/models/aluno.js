@@ -17,6 +17,16 @@ export default (sequelize, DataTypes) => {
       },
       allowNull: false,
     },
+    senha: {
+      type: DataTypes.STRING(45),
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Senha não pode estar vazio.',
+        },
+      },
+      allowNull: false,
+    },
     sexo: {
       type: DataTypes.INTEGER(1),
       validate: {
