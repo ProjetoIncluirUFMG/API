@@ -2,13 +2,13 @@ export default (sequelize, DataTypes) => {
   const Disciplina = sequelize.define('Disciplina', {
     id_disciplina: {
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER(11),
       autoIncrement: true,
     },
-    nome_disciplina: DataTypes.STRING,
-    ementa_disciplina: DataTypes.STRING,
-    id_curso: DataTypes.INTEGER,
-    status: DataTypes.INTEGER,
+    nome_disciplina: DataTypes.STRING(100),
+    ementa_disciplina: DataTypes.STRING(300),
+    id_curso: DataTypes.INTEGER(11),
+    status: DataTypes.INTEGER(11),
   }, {
     tableName: 'disciplina',
     timestamps: false,

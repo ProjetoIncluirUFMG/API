@@ -5,8 +5,10 @@ export function login(req, res) {
 }
 
 export function cadastrar(req, res) {
-  console.log('DEBUG req.body', req.body);
-  res.send({ 'DEBUG req.body': req.body });
+  // TODO atualizar tabela de usuarios e criar senha bcript
+  AlunoService.cadastrar(req.body)
+  .then(usuario => res.status(200).send(usuario))
+  .catch(error => res.status(400).send(error));
 }
 
 export default {

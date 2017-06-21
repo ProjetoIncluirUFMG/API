@@ -2,12 +2,12 @@ export default (sequelize, DataTypes) => {
   const Curso = sequelize.define('Curso', {
     id_curso: {
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER(11),
       autoIncrement: true,
     },
-    nome_curso: DataTypes.STRING,
-    descricao_curso: DataTypes.STRING,
-    status: DataTypes.INTEGER,
+    nome_curso: DataTypes.STRING(45),
+    descricao_curso: DataTypes.STRING(300),
+    status: DataTypes.INTEGER(11),
   }, {
     tableName: 'curso',
     timestamps: false,

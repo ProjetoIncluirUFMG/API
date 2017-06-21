@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt-nodejs';
 import jwt from 'jwt-simple';
 import config from '../config';
 
-import BD from '../models';
+import BD, { criarOuAtualizar } from '../models';
 
 const Aluno = BD.Aluno;
 
@@ -11,6 +11,17 @@ export default class AlunoService {
     const timestamp = new Date().getTime();
     const exp = new Date().getTime() + 300000000000;
     return jwt.encode({ sub: aluno.id_aluno, iat: timestamp, exp }, config.jwt.secret);
+  }
+
+  static cadastrar(carga) {
+    const aluno = carga;
+    aluno.rg = `${aluno.uf_rg}-${aluno.numero_rg}`;
+    aluno.cadastro_atualizado = true;
+    if (aluno.is_cpf_responsavel === undefined || aluno.is_cpf_responsavel === null) {
+      aluno.is_cpf_responsavel = false;
+    }
+    aluno.status = 10;
+    return criarOuAtualizar(Aluno, aluno, { email: aluno.email });
   }
 
   static buscarPorEmail(email) {
