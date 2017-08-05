@@ -43,11 +43,9 @@ export default bd;
 // Funções para suporte
 export function criarOuAtualizar(modelo, valores, condicao) {
   return modelo
-      .findOne({ where: condicao })
-      .then((obj) => {
-        if (obj) {
-          return obj.update(valores);
-        }
-        return modelo.create(valores);
-      });
+    .findOne({ where: condicao })
+    .then((obj) => {
+      if (obj) return obj.update(valores);
+      return modelo.create(valores);
+    });
 }

@@ -162,6 +162,7 @@ export default (sequelize, DataTypes) => {
       },
       allowNull: false,
     },
+    recuperar_senha_token: DataTypes.STRING(255),
     endereco: DataTypes.STRING(150),
     numero: DataTypes.INTEGER(10),
     complemento: DataTypes.STRING(50),

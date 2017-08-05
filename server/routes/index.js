@@ -3,19 +3,21 @@ import {} from '../services/passport';
 
 import Controllers from '../controllers';
 
-const requereAutenticacaoJWT = passport.authenticate('jwt', { session: false });
-const requereAutenticacaoLocal = passport.authenticate('local', { session: false });
+const requerAutenticacaoJWT = passport.authenticate('jwt', { session: false });
+const requerAutenticacaoLocal = passport.authenticate('local', { session: false });
 
 const CursoController = Controllers.curso;
 const AlunoController = Controllers.aluno;
 const AutenticacaoController = Controllers.autenticacao;
 
-module.exports = (app) => {
-  app.get('/', requereAutenticacaoJWT, (req, res) => {
+export default (app) => {
+  app.get('/', requerAutenticacaoJWT, (req, res) => {
     res.send({ mensagem: 'Codigo secreto!' });
   });
   app.get('/cursos', CursoController.lista);
-  app.post('/usuario/cadastrar', AutenticacaoController.cadastrar);
-  app.post('/usuario/login', requereAutenticacaoLocal, AutenticacaoController.login);
+  app.post('/usuario/cadastrar', AlunoController.cadastrar);
+  app.post('/usuario/login', requerAutenticacaoLocal, AutenticacaoController.login);
+  app.post('/usuario/recuperarSenha', AlunoController.recuperarSenha);
+  app.post('/usuario/resetarSenha', AlunoController.resetarSenha);
   app.get('/usuario', AlunoController.buscar);
 };
