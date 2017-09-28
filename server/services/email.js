@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 export default class EmailService {
   static enviar(destinatario, sujeito, mensagem) {
     const opcoesEmail = {

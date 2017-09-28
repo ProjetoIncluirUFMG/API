@@ -19,5 +19,6 @@ export default (app) => {
   app.post('/usuario/login', requerAutenticacaoLocal, AutenticacaoController.login);
   app.post('/usuario/recuperarSenha', AlunoController.recuperarSenha);
   app.post('/usuario/resetarSenha', AlunoController.resetarSenha);
+  app.get('/usuario/temDependente', AlunoController.temDependente);
   app.get('/usuario', AlunoController.buscar);
 };

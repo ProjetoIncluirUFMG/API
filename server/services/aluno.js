@@ -20,9 +20,9 @@ export default class AlunoService {
   }
 
   static cadastrar(carga) {
-    // Validar se usuario já foi cadastrador
-    return this.buscarPorEmail(carga.email).then((alunoEncontrado) => {
-      if (alunoEncontrado !== '' && alunoEncontrado !== null && alunoEncontrado.cadastro_atualizado === true) {
+    // Validar se usuario já foi cadastrador e não é dependente
+    return this.buscarUmPorCPF(carga.cpf).then((alunoEncontrado) => {
+      if (alunoEncontrado !== '' && alunoEncontrado !== null && alunoEncontrado.cadastro_atualizado === true && alunoEncontrado.is_cpf_responsavel === 0) {
         throw new Error('Você já está cadastrado. Clique em "Login" para entrar no sistema');
       }
 
@@ -45,7 +45,11 @@ export default class AlunoService {
       }
 
       const aluno = carga;
-      aluno.rg = `${aluno.uf_rg}-${aluno.numero_rg}`;
+
+      if (aluno.uf_rg && aluno.uf_rg.length > 0 && aluno.numero_rg && aluno.numero_rg.length > 0) {
+        aluno.rg = `${aluno.uf_rg}-${aluno.numero_rg}`;
+      }
+
       aluno.cadastro_atualizado = true;
       if (aluno.is_cpf_responsavel === undefined || aluno.is_cpf_responsavel === null) {
         aluno.is_cpf_responsavel = false;
@@ -58,7 +62,7 @@ export default class AlunoService {
           const dataNascimento = aluno.data_nascimento.split('-');
           aluno.data_nascimento =
           new Date(dataNascimento[2], dataNascimento[1] - 1, dataNascimento[0]);
-          return criarOuAtualizar(Aluno, aluno, { email: aluno.email });
+          return criarOuAtualizar(Aluno, aluno, { cpf: aluno.cpf });
         });
     }).then(aluno => ({ aluno, jwt: AlunoService.gerarToken(aluno) }))
       .catch((erro) => {
@@ -66,15 +70,29 @@ export default class AlunoService {
       });
   }
 
-  static recuperarSenha(email) {
-    return Aluno
-      .findOne({
-        where: {
-          email: {
-            $like: `%${email}`,
-          },
-        },
-      })
+  static temDependente(cpf) {
+    return this.buscarTodosPorCPF(cpf)
+      .then((alunos) => {
+        let temDependente = false;
+        const listaDependentes = alunos.map((aluno) => {
+          if (aluno.is_cpf_responsavel === true) temDependente = true;
+          return ({
+            id: aluno.id_aluno,
+            nome: aluno.nome_aluno,
+            email: aluno.email,
+            rg: aluno.rg,
+          });
+        });
+
+        return {
+          temDependente,
+          listaDependentes,
+        };
+      });
+  }
+
+  static recuperarSenha(cpf) {
+    return AlunoService.buscarPorCPF(cpf)
       .then((usuario) => {
         if (usuario === null) throw new Error('Email não encontrado na base de dados!');
 
@@ -82,7 +100,7 @@ export default class AlunoService {
           {
             recuperar_senha_token: crypto.randomBytes(32).toString('hex'),
           },
-          { email },
+          { cpf },
         );
       })
       .then((usuario) => {
@@ -116,12 +134,25 @@ export default class AlunoService {
       });
   }
 
-  static buscarPorEmail(email) {
+  static buscarTodosPorCPF(cpf) {
+    return Aluno
+      .findAll({
+        where: {
+          cpf: {
+            $eq: `${cpf}`,
+          },
+        },
+      })
+      .then(aluno => aluno)
+      .catch(error => error);
+  }
+
+  static buscarUmPorCPF(cpf) {
     return Aluno
       .findOne({
         where: {
-          email: {
-            $like: `%${email}`,
+          cpf: {
+            $eq: `${cpf}`,
           },
         },
       })
