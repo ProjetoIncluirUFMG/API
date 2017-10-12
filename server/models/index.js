@@ -49,3 +49,16 @@ export function criarOuAtualizar(modelo, valores, condicao) {
       return modelo.create(valores);
     });
 }
+
+export function atualizar(modelo, valores, condicao) {
+  return modelo
+    .findOne({ where: condicao })
+    .then((obj) => {
+      if (obj) return obj.update(valores);
+      return null;
+    });
+}
+
+export function criar(modelo, valor) {
+  return modelo.create(valor);
+}

@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import EmailService from './email';
 import config from '../config';
 
-import BD, { criarOuAtualizar } from '../models';
+import BD, { criar, atualizar, criarOuAtualizar } from '../models';
 
 const bcryptPromise = Promise.promisifyAll(bcrypt);
 const Aluno = BD.Aluno;
@@ -16,19 +16,39 @@ export default class AlunoService {
   static gerarToken(aluno) {
     const timestamp = new Date().getTime();
     const exp = new Date().getTime() + 300000000000;
-    return jwt.encode({ sub: aluno.id_aluno, iat: timestamp, exp }, config.jwt.segredo);
+    return jwt.encode({
+      sub: aluno.id_aluno,
+      iat: timestamp,
+      exp,
+    }, config.jwt.segredo);
   }
 
   static cadastrar(carga) {
-    // Validar se usuario já foi cadastrador e não é dependente
-    return this.buscarUmPorCPF(carga.cpf).then((alunoEncontrado) => {
-      if (alunoEncontrado !== '' && alunoEncontrado !== null && alunoEncontrado.cadastro_atualizado === true && alunoEncontrado.is_cpf_responsavel === 0) {
+    let cargaTradada = null;
+
+    let buscarPorId = false;
+
+    if (carga.id_aluno) {
+      buscarPorId = true;
+    } else if (!carga.cpf) {
+      throw new Error('Favor fornecer um numero de id, ou cpf válido!');
+    }
+
+    return this.buscarPorId(carga.id_aluno).then((alunoEncontrado) => {
+      if (alunoEncontrado !== '' && alunoEncontrado !== null &&
+          buscarPorId && alunoEncontrado.cadastro_atualizado) {
         throw new Error('Você já está cadastrado. Clique em "Login" para entrar no sistema');
       }
 
       // Validar senha
       if (carga.senha !== carga.confirmarSenha) {
         throw new Error('Senha incorreta! Digite ambos valores novamente');
+      }
+
+      cargaTradada = carga;
+      // Remover qualquer id entrgue pelo front-end caso aluno não encontrado no banco de dados
+      if (alunoEncontrado === '' || alunoEncontrado === null) {
+        cargaTradada.id_aluno = null;
       }
 
       // Validações do re-captcha
@@ -44,7 +64,7 @@ export default class AlunoService {
         throw new Error('Captcha inválido, recarregue a página e tente novamente.');
       }
 
-      const aluno = carga;
+      const aluno = cargaTradada;
 
       if (aluno.uf_rg && aluno.uf_rg.length > 0 && aluno.numero_rg && aluno.numero_rg.length > 0) {
         aluno.rg = `${aluno.uf_rg}-${aluno.numero_rg}`;
@@ -62,9 +82,13 @@ export default class AlunoService {
           const dataNascimento = aluno.data_nascimento.split('-');
           aluno.data_nascimento =
           new Date(dataNascimento[2], dataNascimento[1] - 1, dataNascimento[0]);
-          return criarOuAtualizar(Aluno, aluno, { cpf: aluno.cpf });
+          if (aluno.id_aluno) {
+            return atualizar(Aluno, aluno, { id_aluno: aluno.id_aluno });
+          }
+          return criar(Aluno, aluno);
         });
-    }).then(aluno => ({ aluno, jwt: AlunoService.gerarToken(aluno) }))
+    })
+      .then(aluno => ({ aluno, jwt: AlunoService.gerarToken(aluno) }))
       .catch((erro) => {
         throw new Error(erro);
       });
@@ -92,7 +116,7 @@ export default class AlunoService {
   }
 
   static recuperarSenha(cpf) {
-    return AlunoService.buscarPorCPF(cpf)
+    return AlunoService.buscarUmPorCPF(cpf)
       .then((usuario) => {
         if (usuario === null) throw new Error('Email não encontrado na base de dados!');
 
@@ -143,7 +167,7 @@ export default class AlunoService {
           },
         },
       })
-      .then(aluno => aluno)
+      .then(alunos => alunos)
       .catch(error => error);
   }
 

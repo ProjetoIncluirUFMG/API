@@ -2,9 +2,8 @@ import AlunoService from '../services/aluno';
 
 export default {
   buscar(req, res) {
-    return AlunoService
-      .buscarPorCPF(req.query.cpf)
-      .then(usuario => res.status(200).send(usuario))
+    return AlunoService.buscarTodosPorCPF(req.query.cpf)
+      .then(usuarios => res.status(200).send(usuarios))
       .catch(erro => res.status(400).send({ erro: erro.message }));
   },
 

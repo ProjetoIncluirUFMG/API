@@ -15,7 +15,7 @@ const opcoesLocais = {
 };
 
 const loginLocal = new LocalStategy(opcoesLocais, (cpf, senha, done) => {
-  AlunoService.buscarPorCPF(cpf).then((usuario) => {
+  AlunoService.buscarUmPorCPF(cpf).then((usuario) => {
     if (!usuario) return done(null, false);
 
     return AlunoService.compararSenhas(usuario.senha, senha, (erro, iguais) => {
