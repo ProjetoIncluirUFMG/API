@@ -26,10 +26,10 @@ export default {
   },
 
   temDependente(req, res) {
-    AlunoService.temDependente(req.query.cpf)
-      .then(({ temDependente, listaDependentes }) =>
-        res.status(200).send({ temDependente, listaDependentes }),
-      )
+    return AlunoService.temDependente(req.query.cpf)
+      .then(({ temDependente, listaDeAlunos }) => {
+        res.status(200).send({ temDependente, listaDeAlunos });
+      })
       .catch(erro => res.status(400).send({ erro: erro.message }));
   },
 };

@@ -9,13 +9,13 @@ const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
 
 const opcoesLocais = {
-  usernameField: 'cpf',
+  usernameField: 'id_aluno',
   passwordField: 'senha',
   session: false,
 };
 
-const loginLocal = new LocalStategy(opcoesLocais, (cpf, senha, done) => {
-  AlunoService.buscarUmPorCPF(cpf).then((usuario) => {
+const loginLocal = new LocalStategy(opcoesLocais, (idAluno, senha, done) => {
+  AlunoService.buscarPorId(idAluno).then((usuario) => {
     if (!usuario) return done(null, false);
 
     return AlunoService.compararSenhas(usuario.senha, senha, (erro, iguais) => {

@@ -27,17 +27,30 @@ export default class AlunoService {
     let cargaTradada = null;
 
     let buscarPorId = false;
+    let buscarPorCPF = false;
+    let promise = null;
 
     if (carga.id_aluno) {
       buscarPorId = true;
-    } else if (!carga.cpf) {
+      promise = this.buscarPorId(carga.id_aluno);
+    } else if (carga.cpf) {
+      buscarPorCPF = true;
+      promise = this.buscarUmPorCPFENaoDependente(carga.cpf);
+    } else {
       throw new Error('Favor fornecer um numero de id, ou cpf válido!');
     }
 
-    return this.buscarPorId(carga.id_aluno).then((alunoEncontrado) => {
+    return promise.then((alunoEncontrado) => {
+      // Usuário dependente já cadastrado e atualizado
       if (alunoEncontrado !== '' && alunoEncontrado !== null &&
           buscarPorId && alunoEncontrado.cadastro_atualizado) {
-        throw new Error('Você já está cadastrado. Clique em "Login" para entrar no sistema');
+        throw new Error('Seu cadastro já encontra-se atualizado. Clique em "Login" para entrar no sistema');
+      }
+
+      // Usuário não dependente já cadastrado e atualizado
+      if (alunoEncontrado !== '' && alunoEncontrado !== null &&
+          buscarPorCPF) {
+        throw new Error('Seu cadastro já encontra-se atualizado. Clique em "Login" para entrar no sistema');
       }
 
       // Validar senha
@@ -98,19 +111,20 @@ export default class AlunoService {
     return this.buscarTodosPorCPF(cpf)
       .then((alunos) => {
         let temDependente = false;
-        const listaDependentes = alunos.map((aluno) => {
-          if (aluno.is_cpf_responsavel === true) temDependente = true;
-          return ({
-            id: aluno.id_aluno,
-            nome: aluno.nome_aluno,
-            email: aluno.email,
-            rg: aluno.rg,
-          });
+        const listaDeAlunos = alunos.map((aluno) => {
+          if (aluno.dataValues.is_cpf_responsavel) temDependente = true;
+          return {
+            id_aluno: aluno.dataValues.id_aluno,
+            is_cpf_responsavel: aluno.dataValues.is_cpf_responsavel,
+            nome_aluno: aluno.dataValues.nome_aluno,
+            email: aluno.dataValues.email,
+            rg: aluno.dataValues.rg,
+          };
         });
 
         return {
           temDependente,
-          listaDependentes,
+          listaDeAlunos,
         };
       });
   }
@@ -171,12 +185,15 @@ export default class AlunoService {
       .catch(error => error);
   }
 
-  static buscarUmPorCPF(cpf) {
+  static buscarUmPorCPFENaoDependente(cpf) {
     return Aluno
       .findOne({
         where: {
           cpf: {
             $eq: `${cpf}`,
+          },
+          is_cpf_responsavel: {
+            $eq: false,
           },
         },
       })
