@@ -66,7 +66,7 @@ export default class AlunoService {
       }
 
       // Caso novo aluno, setar data de registro como data atual
-      if (!alunoEncontrado.data_registro) {
+      if (!alunoEncontrado || !alunoEncontrado.data_registro) {
         cargaTradada.data_registro = new Date();
       }
 
