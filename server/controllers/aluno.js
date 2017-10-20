@@ -14,7 +14,7 @@ export default {
   },
 
   recuperarSenha(req, res) {
-    AlunoService.recuperarSenha(req.body.cpf)
+    AlunoService.recuperarSenha(req.body.id_aluno)
       .then(() => res.status(200).send({ emailEnviado: true }))
       .catch(erro => res.status(400).send({ erro: erro.message }));
   },

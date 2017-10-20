@@ -49,7 +49,7 @@ export default class AlunoService {
 
       // Usuário não dependente já cadastrado e atualizado
       if (alunoEncontrado !== '' && alunoEncontrado !== null &&
-          buscarPorCPF) {
+          buscarPorCPF && !carga.is_cpf_responsavel) {
         throw new Error('Seu cadastro já encontra-se atualizado. Clique em "Login" para entrar no sistema');
       }
 
@@ -60,8 +60,14 @@ export default class AlunoService {
 
       cargaTradada = carga;
       // Remover qualquer id entrgue pelo front-end caso aluno não encontrado no banco de dados
-      if (alunoEncontrado === '' || alunoEncontrado === null) {
-        cargaTradada.id_aluno = null;
+      if ((alunoEncontrado === '' || alunoEncontrado === null) ||
+          (buscarPorCPF && alunoEncontrado && cargaTradada.is_cpf_responsavel)) {
+        delete cargaTradada.id_aluno;
+      }
+
+      // Caso novo aluno, setar data de registro como data atual
+      if (!alunoEncontrado.data_registro) {
+        cargaTradada.data_registro = new Date();
       }
 
       // Validações do re-captcha
@@ -129,8 +135,8 @@ export default class AlunoService {
       });
   }
 
-  static recuperarSenha(cpf) {
-    return AlunoService.buscarUmPorCPF(cpf)
+  static recuperarSenha(idAluno) {
+    return AlunoService.buscarPorId(idAluno)
       .then((usuario) => {
         if (usuario === null) throw new Error('Email não encontrado na base de dados!');
 
@@ -138,7 +144,7 @@ export default class AlunoService {
           {
             recuperar_senha_token: crypto.randomBytes(32).toString('hex'),
           },
-          { cpf },
+          { id_aluno: idAluno },
         );
       })
       .then((usuario) => {

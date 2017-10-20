@@ -66,16 +66,7 @@ export default (sequelize, DataTypes) => {
       },
       allowNull: false,
     },
-    rg: {
-      type: DataTypes.STRING(20),
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: 'RG não pode estar vazio.',
-        },
-      },
-      allowNull: false,
-    },
+    rg: DataTypes.STRING(20),
     telefone: {
       type: DataTypes.STRING(20),
       validate: {
@@ -138,16 +129,6 @@ export default (sequelize, DataTypes) => {
         notEmpty: {
           args: true,
           msg: 'Google places não pode estar vazio.',
-        },
-      },
-      allowNull: false,
-    },
-    endereco_google: {
-      type: DataTypes.STRING(255),
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: 'Endereço não pode estar vazio.',
         },
       },
       allowNull: false,
