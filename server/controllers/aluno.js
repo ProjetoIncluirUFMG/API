@@ -26,6 +26,7 @@ export default {
   },
 
   temDependente(req, res) {
+    console.log(req.query);
     return AlunoService.temDependente(req.query.cpf)
       .then(({ temDependente, listaDeAlunos }) => {
         res.status(200).send({ temDependente, listaDeAlunos });
