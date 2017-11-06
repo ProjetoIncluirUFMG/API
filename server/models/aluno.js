@@ -75,8 +75,8 @@ export default (sequelize, DataTypes) => {
           msg: 'Telefone não pode estar vazio.',
         },
         len: {
-          args: [15, 15],
-          msg: 'Telefone deve conter 11 caracteres.',
+          args: [14, 14],
+          msg: 'Telefone deve conter 10 caracteres.',
         },
       },
       allowNull: false,
@@ -89,8 +89,8 @@ export default (sequelize, DataTypes) => {
           msg: 'Celular não pode estar vazio.',
         },
         len: {
-          args: [16, 16],
-          msg: 'Telefone deve conter 16 caracteres.',
+          args: [15, 15],
+          msg: 'Telefone deve conter 11 caracteres.',
         },
       },
       allowNull: false,

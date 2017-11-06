@@ -85,10 +85,6 @@ export default class AlunoService {
 
       const aluno = cargaTradada;
 
-      if (aluno.uf_rg && aluno.uf_rg.length > 0 && aluno.numero_rg && aluno.numero_rg.length > 0) {
-        aluno.rg = `${aluno.uf_rg}-${aluno.numero_rg}`;
-      }
-
       aluno.cadastro_atualizado = true;
       if (aluno.is_cpf_responsavel === undefined || aluno.is_cpf_responsavel === null) {
         aluno.is_cpf_responsavel = false;
@@ -124,7 +120,6 @@ export default class AlunoService {
             is_cpf_responsavel: aluno.dataValues.is_cpf_responsavel,
             nome_aluno: aluno.dataValues.nome_aluno,
             email: aluno.dataValues.email,
-            rg: aluno.dataValues.rg,
           };
         });
 
