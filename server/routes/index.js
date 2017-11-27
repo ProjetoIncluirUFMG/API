@@ -6,14 +6,18 @@ import Controllers from '../controllers';
 const requerAutenticacaoJWT = passport.authenticate('jwt', { session: false });
 const requerAutenticacaoLocal = passport.authenticate('local', { session: false });
 
+const ConfiguracaoController = Controllers.configuracao;
 const CursoController = Controllers.curso;
 const AlunoController = Controllers.aluno;
 const AutenticacaoController = Controllers.autenticacao;
+const PreMatriculaController = Controllers.preMatricula;
 
 export default (app) => {
   app.get('/', requerAutenticacaoJWT, (req, res) => {
     res.send({ mensagem: 'Codigo secreto!' });
   });
+  app.get('/usuario/:id_usuario/disciplina/:id_disciplina/disponibilidade', PreMatriculaController.disponibilidade);
+  app.get('/configuracao', ConfiguracaoController.buscar);
   app.get('/cursos', CursoController.lista);
   app.post('/usuario/cadastrar', AlunoController.cadastrar);
   app.post('/usuario/login', requerAutenticacaoLocal, AutenticacaoController.login);

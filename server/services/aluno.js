@@ -9,18 +9,24 @@ import config from '../config';
 
 import BD, { criar, atualizar, criarOuAtualizar } from '../models';
 
+const { Aluno, Periodo, Turma, TurmaAluno, Falta } = BD;
+
 const bcryptPromise = Promise.promisifyAll(bcrypt);
-const Aluno = BD.Aluno;
 
 export default class AlunoService {
   static gerarToken(aluno) {
     const timestamp = new Date().getTime();
     const exp = new Date().getTime() + 300000000000;
-    return jwt.encode({
-      sub: aluno.id_aluno,
-      iat: timestamp,
-      exp,
-    }, config.jwt.segredo);
+    return {
+      jwt: jwt.encode({
+        sub: aluno.id_aluno,
+        iat: timestamp,
+        exp,
+      }, config.jwt.segredo),
+      id: aluno.id_aluno,
+      nome: aluno.nome_aluno,
+      email: aluno.email,
+    };
   }
 
   static cadastrar(carga) {
@@ -94,7 +100,7 @@ export default class AlunoService {
         .then(salt => bcryptPromise.hashAsync(aluno.senha, salt, null))
         .then((hash) => {
           aluno.senha = hash;
-          const dataNascimento = aluno.data_nascimento.split('-');
+          const dataNascimento = aluno.data_nascimento.split('/');
           aluno.data_nascimento =
           new Date(dataNascimento[2], dataNascimento[1] - 1, dataNascimento[0]);
           if (aluno.id_aluno) {
@@ -214,5 +220,30 @@ export default class AlunoService {
       if (erro) return callback(erro);
       return callback(null, iguais);
     });
+  }
+
+  static eVeterano() {
+    return Periodo.findOne({
+      include: [{
+        model: Turma,
+        as: 'turmas',
+        where: {},
+        include: [{
+          model: TurmaAluno,
+          as: 'turma_aluno',
+          where: {},
+          include: [{
+            model: Falta,
+            as: 'falta',
+          }],
+        }],
+      }],
+      where: {
+        is_atual: true,
+      },
+    }).then((periodo) => {
+      console.log("periodo: ", periodo)
+      return periodo;
+    }).catch(error => error);
   }
 }
