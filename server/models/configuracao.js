@@ -6,6 +6,7 @@ export default (sequelize, DataTypes) => {
     },
     texto_inicial: DataTypes.STRING(10000),
     somente_veterano: DataTypes.BOOLEAN,
+    sistema_ativo: DataTypes.BOOLEAN,
   }, {
     tableName: 'configuracao_cadastro',
     timestamps: false,

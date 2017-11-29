@@ -13,10 +13,14 @@ const AutenticacaoController = Controllers.autenticacao;
 const PreMatriculaController = Controllers.preMatricula;
 
 export default (app) => {
-  app.get('/', requerAutenticacaoJWT, (req, res) => {
-    res.send({ mensagem: 'Codigo secreto!' });
+  // Validar se API esta ativa (controle através do sistema de administrador)
+  app.use(ConfiguracaoController.validarSeAPIAtiva);
+
+  app.get('/', (req, res) => {
+    res.send({ apiAtiva: true });
   });
-  app.get('/usuario/:id_usuario/disciplina/:id_disciplina/disponibilidade', PreMatriculaController.disponibilidade);
+  // requerAutenticacaoJWT,
+  app.get('/usuario/:id_usuario/disciplinasDisponiveisSomenteVeteranos', PreMatriculaController.disciplinasDisponiveisSomenteVeteranos);
   app.get('/configuracao', ConfiguracaoController.buscar);
   app.get('/cursos', CursoController.lista);
   app.post('/usuario/cadastrar', AlunoController.cadastrar);

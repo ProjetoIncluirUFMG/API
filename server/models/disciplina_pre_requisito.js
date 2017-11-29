@@ -12,5 +12,12 @@ export default (sequelize, DataTypes) => {
     tableName: 'disciplina_pre_requisitos',
     timestamps: false,
   });
+  DisciplinaPreRequisito.associar = (models) => {
+    DisciplinaPreRequisito.hasOne(models.Disciplina, {
+      foreignKey: 'id_disciplina',
+      targetKey: 'id_disciplina',
+      as: 'disciplina',
+    });
+  };
   return DisciplinaPreRequisito;
 };
