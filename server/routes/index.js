@@ -20,7 +20,7 @@ export default (app) => {
     res.send({ apiAtiva: true });
   });
   // requerAutenticacaoJWT,
-  app.get('/usuario/:id_usuario/disciplinasDisponiveisSomenteVeteranos', PreMatriculaController.disciplinasDisponiveisSomenteVeteranos);
+  app.get('/usuario/disciplinasDisponiveis', requerAutenticacaoJWT, PreMatriculaController.disciplinasDisponiveis);
   app.get('/configuracao', ConfiguracaoController.buscar);
   app.get('/cursos', CursoController.lista);
   app.post('/usuario/cadastrar', AlunoController.cadastrar);

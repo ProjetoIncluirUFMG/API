@@ -1,7 +1,6 @@
 import BD from '../models';
 
-const Curso = BD.Curso;
-const Disciplina = BD.Disciplina;
+const { Curso, Disciplina, DisciplinaPreRequisito } = BD;
 
 export default class CursoService {
   static listarTodos() {
@@ -10,6 +9,10 @@ export default class CursoService {
         include: [{
           model: Disciplina,
           as: 'disciplinas',
+          include: [{
+            model: DisciplinaPreRequisito,
+            as: 'pre_disciplinas',
+          }],
         }],
         where: {
           '$Curso.status$': 1,

@@ -18,7 +18,12 @@ export default (sequelize, DataTypes) => {
     TurmaAluno.hasMany(models.Falta, {
       foreignKey: 'id_turma_aluno',
       targetKey: 'id_turma_aluno',
-      as: 'falta',
+      as: 'faltas',
+    });
+    TurmaAluno.hasMany(models.Aluno, {
+      foreignKey: 'id_aluno',
+      targetKey: 'id_aluno',
+      as: 'alunos',
     });
   };
   return TurmaAluno;

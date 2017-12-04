@@ -15,6 +15,12 @@ export default (sequelize, DataTypes) => {
       sourceKey: 'id_periodo',
       as: 'turmas',
     });
+
+    Periodo.hasMany(models.DataFuncionamento, {
+      foreignKey: 'id_periodo',
+      sourceKey: 'id_periodo',
+      as: 'data_funcionamentos',
+    });
   };
   return Periodo;
 };

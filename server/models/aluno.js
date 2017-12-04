@@ -183,5 +183,11 @@ export default (sequelize, DataTypes) => {
     tableName: 'aluno',
     timestamps: false,
   });
+  Aluno.associar = (models) => {
+    Aluno.belongsTo(models.TurmaAluno, {
+      foreignKey: 'id_aluno',
+      targetKey: 'id_aluno',
+    });
+  };
   return Aluno;
 };

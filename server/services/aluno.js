@@ -18,7 +18,7 @@ export default class AlunoService {
     const timestamp = new Date().getTime();
     // Token com 1 dia para expirar
     // segs * min * horas = (60 * 60 * 24)
-    const exp = Math.floor(Date.now() / 1000) + (60 * 2);
+    const exp = Math.floor(Date.now() / 1000) + (60 * 60 * 24);
     return {
       jwt: jwt.encode({
         sub: aluno.id_aluno,
@@ -222,5 +222,11 @@ export default class AlunoService {
       if (erro) return callback(erro);
       return callback(null, iguais);
     });
+  }
+
+  static calcularIdade(aniversario) { // birthday is a date
+    const idadeDifMs = Date.now() - aniversario.getTime();
+    const idadeDate = new Date(idadeDifMs); // miliseconds from epoch
+    return Math.abs(idadeDate.getUTCFullYear() - 1970);
   }
 }

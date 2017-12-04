@@ -15,6 +15,7 @@ export default (sequelize, DataTypes) => {
     total_fila_de_nivelamento: DataTypes.INTEGER(10),
     total_fila_de_espera: DataTypes.INTEGER(10),
 
+    idade_minima: DataTypes.INTEGER(10),
     id_curso: DataTypes.INTEGER(11),
     status: DataTypes.INTEGER(11),
   }, {
@@ -26,6 +27,11 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'id_disciplina_pre_requisito',
       targetKey: 'id_disciplina',
       as: 'proximas_disciplinas',
+    });
+    Disciplina.hasMany(models.DisciplinaPreRequisito, {
+      foreignKey: 'id_disciplina',
+      targetKey: 'id_disciplina',
+      as: 'pre_disciplinas',
     });
     Disciplina.belongsTo(models.Curso, {
       foreignKey: 'id_curso',

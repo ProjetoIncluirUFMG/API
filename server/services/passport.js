@@ -28,15 +28,17 @@ const loginLocal = new LocalStategy(opcoesLocais, (idAluno, senha, done) => {
 
 
 const opcoesJwt = {
-  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
   secretOrKey: config.jwt.segredo,
 };
 
 const loginJwt = new JwtStrategy(opcoesJwt, (carga, done) => {
   AlunoService.buscarPorId(carga.sub).then((usuario) => {
-    if (usuario) done(null, usuario);
-    done(null, false);
-  }).fail(err => done(err, false));
+    if (usuario) {
+      return done(null, usuario);
+    }
+    return done(null, false);
+  }).catch(err => done(err, false));
 });
 
 passport.use(loginJwt);

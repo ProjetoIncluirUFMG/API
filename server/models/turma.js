@@ -11,7 +11,6 @@ export default (sequelize, DataTypes) => {
     timestamps: false,
   });
   Turma.associar = (models) => {
-    console.log("models.Disciplina: ", models.Periodo)
     Turma.belongsTo(models.Disciplina, {
       foreignKey: 'id_disciplina',
       targetKey: 'id_disciplina',

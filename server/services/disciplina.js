@@ -1,6 +1,7 @@
 import BD from '../models';
 
-const { DisciplinaPreRequisito, Periodo, Turma, Disciplina, TurmaAluno, Falta } = BD;
+const { DisciplinaPreRequisito, DataFuncionamento, Aluno, Periodo, Turma,
+  Disciplina, TurmaAluno, Falta } = BD;
 
 export default class DisciplinaService {
   static buscarPreRequisitos(idDisciplina) {
@@ -30,7 +31,10 @@ export default class DisciplinaService {
           },
           include: [{
             model: Falta,
-            as: 'falta',
+            as: 'faltas',
+          }, {
+            model: Aluno,
+            as: 'alunos',
           }],
         },
         {
@@ -45,15 +49,16 @@ export default class DisciplinaService {
             }],
           }],
         }],
+      }, {
+        model: DataFuncionamento,
+        as: 'data_funcionamentos',
+        where: {},
       }],
       where: {
         is_atual: true,
       },
-    }).then((periodo) => {
-      if (!periodo) {
-        return [];
-      }
-      return periodo;
-    }).catch(error => error);
+    })
+      .then(periodo => periodo)
+      .catch(error => error);
   }
 }
