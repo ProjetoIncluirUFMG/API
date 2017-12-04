@@ -12,33 +12,33 @@ const STATUS = {
   VAGA_NO_CURSO: 'VagaNoCurso',
 };
 
-const TURNOS = {
-  MANHA: 'Manha',
-  TARDE: 'Tarde',
+const TURMAS = {
+  PRIMEIRO: '8:00 - 10:00',
+  SEGUNDO: '10:30 - 12:30',
 };
 
 export default class PreMatriculaService {
-  static buscarTurnosValidos(turnoPreMatriculas) {
-    const turnosDisponiveis = [];
-    if (!turnoPreMatriculas.Manha) {
-      turnosDisponiveis.push(TURNOS.MANHA);
+  static buscarTurmasValidos(turmaPreMatriculas) {
+    const turmasDisponiveis = [];
+    if (!turmaPreMatriculas.Manha) {
+      turmasDisponiveis.push(TURMAS.PRIMEIRO);
     }
-    if (!turnoPreMatriculas.Tarde) {
-      turnosDisponiveis.push(TURNOS.TARDE);
+    if (!turmaPreMatriculas.Tarde) {
+      turmasDisponiveis.push(TURMAS.SEGUNDO);
     }
-    return turnosDisponiveis;
+    return turmasDisponiveis;
   }
 
   static criarMapaPreMatricula(preMatriculas) {
-    const turnoPreMatriculas = {};
+    const turmaPreMatriculas = {};
     preMatriculas.forEach((preMatricula) => {
-      if (preMatricula.turno === TURNOS.MANHA) {
-        turnoPreMatriculas.Manha = preMatricula;
-      } else if (preMatricula.turno === TURNOS.TARDE) {
-        turnoPreMatriculas.Tarde = preMatricula;
+      if (preMatricula.turma === TURMAS.PRIMEIRO) {
+        turmaPreMatriculas.Manha = preMatricula;
+      } else if (preMatricula.turma === TURMAS.SEGUNDO) {
+        turmaPreMatriculas.Tarde = preMatricula;
       }
     });
-    return turnoPreMatriculas;
+    return turmaPreMatriculas;
   }
 
   static disciplinasDisponiveis(aluno) {
@@ -52,7 +52,7 @@ export default class PreMatriculaService {
 
   static disciplinasDisponiveisTodos(aluno) {
     const idadeAluno = AlunoService.calcularIdade(new Date(aluno.data_nascimento));
-    let turnoPreMatriculas = {};
+    let turmaPreMatriculas = {};
 
     return PreMatriculaService.buscarPreMatriculas(aluno.id_aluno)
       .then((preMatriculas) => {
@@ -61,7 +61,7 @@ export default class PreMatriculaService {
           return {};
         }
         // Buscar pre cadastros previamente realizados
-        turnoPreMatriculas = PreMatriculaService.criarMapaPreMatricula(preMatriculas);
+        turmaPreMatriculas = PreMatriculaService.criarMapaPreMatricula(preMatriculas);
 
         return CursoService.listarTodos();
       }).then((cursos) => {
@@ -83,7 +83,7 @@ export default class PreMatriculaService {
             if (status !== null) {
               disciplinas[disciplina.id_disciplina] = {
                 status,
-                turnos: PreMatriculaService.buscarTurnosValidos(turnoPreMatriculas),
+                turmas: PreMatriculaService.buscarTurmasValidos(turmaPreMatriculas),
               };
             }
           });
@@ -108,7 +108,7 @@ export default class PreMatriculaService {
           return {};
         }
         // Buscar pre cadastros previamente realizados
-        const turnoPreMatriculas = PreMatriculaService.criarMapaPreMatricula(preMatriculas);
+        const turmaPreMatriculas = PreMatriculaService.criarMapaPreMatricula(preMatriculas);
 
         return DesciplinaService.buscarEmCurso(aluno.id_aluno).then((periodo) => {
           if (!periodo) {
@@ -139,7 +139,7 @@ export default class PreMatriculaService {
                 {
                   ...disciplina.dataValues,
                   status: STATUS.VAGA_NO_CURSO,
-                  turnos: PreMatriculaService.buscarTurnosValidos(turnoPreMatriculas),
+                  turmas: PreMatriculaService.buscarTurmasValidos(turmaPreMatriculas),
                 }
               ));
             const disciplinasComFilasDeEspera = turma.disciplina.proximas_disciplinas
@@ -154,7 +154,7 @@ export default class PreMatriculaService {
                 {
                   ...disciplina.dataValues,
                   status: STATUS.FILA_DE_ESPERA,
-                  turnos: PreMatriculaService.buscarTurnosValidos(turnoPreMatriculas),
+                  turmas: PreMatriculaService.buscarTurmasValidos(turmaPreMatriculas),
                 }
               ));
 
@@ -169,7 +169,7 @@ export default class PreMatriculaService {
           proximasDisciplinasComVagaOuFila.forEach((ret) => {
             disciplinasComVagaOuFila[ret.id_disciplina] = {
               status: ret.status,
-              turnos: ret.turnos,
+              turmas: ret.turmas,
             };
           });
           return disciplinasComVagaOuFila;
