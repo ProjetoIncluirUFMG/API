@@ -1,3 +1,5 @@
+import Sequelize from 'sequelize';
+
 import BD from '../models';
 
 const { DisciplinaPreRequisito, DataFuncionamento, Aluno, Periodo, Turma,
@@ -17,7 +19,18 @@ export default class DisciplinaService {
     });
   }
 
-  static buscarEmCurso(idAluno) {
+  static atualizarTotalDeVagas(idDisciplina, campo) {
+    const values = {};
+    values[campo] = Sequelize.literal(`${campo} + 1`);
+    return Disciplina.update(values,
+      { where: { id_disciplina: idDisciplina } });
+  }
+
+  static buscarEmCurso(idAluno, idDisciplina) {
+    let filtroDisciplina = {};
+    if (idDisciplina) {
+      filtroDisciplina = { id_disciplina: idDisciplina };
+    }
     return Periodo.findOne({
       include: [{
         model: Turma,
@@ -40,6 +53,7 @@ export default class DisciplinaService {
         {
           model: Disciplina,
           as: 'disciplina',
+          where: filtroDisciplina,
           include: [{
             model: DisciplinaPreRequisito,
             as: 'proximas_disciplinas',

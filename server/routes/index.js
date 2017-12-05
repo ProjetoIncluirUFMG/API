@@ -19,8 +19,11 @@ export default (app) => {
   app.get('/', (req, res) => {
     res.send({ apiAtiva: true });
   });
-  // requerAutenticacaoJWT,
   app.get('/usuario/disciplinasDisponiveis', requerAutenticacaoJWT, PreMatriculaController.disciplinasDisponiveis);
+  app.get('/usuario/disciplinaDisponivel/:id_disciplina', requerAutenticacaoJWT, PreMatriculaController.disciplinaDisponivel);
+  app.post('/usuario/registrarPreMatricula/:id_disciplina', requerAutenticacaoJWT, PreMatriculaController.registrarPreMatricula);
+  app.get('/usuario/buscarPreMatriculas', requerAutenticacaoJWT, PreMatriculaController.buscarPreMatriculas);
+
   app.get('/configuracao', ConfiguracaoController.buscar);
   app.get('/cursos', CursoController.lista);
   app.post('/usuario/cadastrar', AlunoController.cadastrar);
